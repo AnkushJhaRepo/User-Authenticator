@@ -1,10 +1,4 @@
-type UserProfileProps = {
-    params: {
-        id: string;
-    };
-};
-
-export default async function UserProfile({ params }: UserProfileProps) {
+export default function UserProfile({ params }: { params: { id: string } }) {
     const id = params.id;
 
     return (
