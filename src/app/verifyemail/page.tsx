@@ -2,14 +2,17 @@
 import axios from "axios"
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
+import { useSearchParams } from 'next/navigation'
 
 export default function VerifyEmailPage() {
-    const [token, setToken] = useState("")
+    const searchParams = useSearchParams()
+    const token = searchParams.get("token") || ""
+
     const [verified, setVerified] = useState(false)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const verifyUserEmail = async () => {
+    const verifyUserEmail = async (token: string) => {
         try {
             setLoading(true)
             await axios.post('/api/users/verifyEmail', { token })
@@ -27,14 +30,14 @@ export default function VerifyEmailPage() {
         }
     }
 
-    useEffect(() => {
-        const urlToken = window.location.search.split("=")[1]
-        setToken(urlToken || "")
-    }, [])
+
+
+
+
 
     useEffect(() => {
-        if (token.length > 0) {
-            verifyUserEmail()
+        if (token) {
+            verifyUserEmail(token)
         }
     }, [token])
 
