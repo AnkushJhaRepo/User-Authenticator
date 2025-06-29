@@ -1,6 +1,6 @@
 
-export default function UserProfile({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function UserProfile({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center p-6">
