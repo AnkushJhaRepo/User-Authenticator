@@ -32,7 +32,12 @@ export async function POST(request: NextRequest) {
         const savedUser = await newUser.save()
         console.log(savedUser);
 
-        await sendEmail({email, emailType: "VERIFY", userId: savedUser._id})
+        try {
+            await sendEmail({ email, emailType: "VERIFY", userId: savedUser._id });
+        } catch (err) {
+            console.error("Email sending failed:", err);
+            // Still return success — don't block signup
+        }
 
         return NextResponse.json({
             message: "User created successfully",
@@ -41,15 +46,15 @@ export async function POST(request: NextRequest) {
 
 
     } catch (error: unknown) {
-    if (error instanceof Error) {
+        if (error instanceof Error) {
+            return NextResponse.json({
+                message: error.message
+            }, { status: 500 });
+        }
+
         return NextResponse.json({
-            message: error.message
+            message: "An unknown error occurred"
         }, { status: 500 });
     }
-
-    return NextResponse.json({
-        message: "An unknown error occurred"
-    }, { status: 500 });
-}
 
 }
