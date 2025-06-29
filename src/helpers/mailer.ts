@@ -2,7 +2,13 @@ import nodemailer from 'nodemailer'
 import User from '@/models/userModel'
 import bcryptjs from 'bcryptjs'
 
-export const sendEmail = async ({ email, emailType, userId }: any) => {
+interface SendEmailParams {
+    email: string;
+    emailType: 'VERIFY' | 'RESET';
+    userId: string;
+}
+
+export const sendEmail = async ({ email, emailType, userId }: SendEmailParams) => {
     try {
         const hashedToken = await bcryptjs.hash(userId.toString(), 10)
 
@@ -15,7 +21,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
         }
 
 
-        var transport = nodemailer.createTransport({
+        const transport = nodemailer.createTransport({
             host: "sandbox.smtp.mailtrap.io",
             port: 2525,
             auth: {
@@ -28,7 +34,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
             from: 'jhaankush65@gmail.com',
             to: email,
             subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-            html: `<p>Click <a href="${process.env.DOMAIN}/${emailType === "VERIFY" ? `verifyemail?token=${hashedToken}` : `resetPassword?token=${hashedToken}` }">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"}
+            html: `<p>Click <a href="${process.env.DOMAIN}/${emailType === "VERIFY" ? `verifyemail?token=${hashedToken}` : `resetPassword?token=${hashedToken}`}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"}
             or copy and paste the link below in your browser. 
             <br> 
             ${process.env.DOMAIN}/${emailType === "VERIFY" ? `verifyemail?token=${hashedToken}` : `resetPassword?token=${hashedToken}`}
@@ -39,7 +45,11 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
         const mailResponse = await transport.sendMail(mailOptions)
         return mailResponse
 
-    } catch (error: any) {
-        throw new Error(error.message)
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        } else {
+            throw new Error("Unknown error occurred while sending email.");
+        }
     }
 }

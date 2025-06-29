@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { NextResponse, NextRequest } from "next/server";
 import axios from "axios";
 
 export default function LoginPage() {
@@ -38,8 +37,14 @@ export default function LoginPage() {
     const forgotPassword = () => {
         try {
             router.push('/forgotPassword');
-        } catch (error: any) {
-            console.log("Forgot password failed", error.message);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
+                console.log("Reset password failed", error.message)
+            } else {
+                setError("An unexpected error occurred. Please try again.")
+                console.error("Unknown error during password reset", error)
+            }
         }
     };
 
@@ -116,14 +121,25 @@ export default function LoginPage() {
                             </div>
                         </div>
 
+                        {/* Error Message */}
+                        {error && (
+                            <p className="text-sm text-red-600 text-center flex items-center justify-center">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {error}
+                            </p>
+                        )}
+
+
                         {/* Action Buttons */}
                         <div className="space-y-4">
                             {/* Login Button */}
                             <button
                                 type="button"
                                 className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${buttonDisabled || loading
-                                        ? "bg-gray-300 cursor-not-allowed"
-                                        : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
+                                    ? "bg-gray-300 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
                                     } ${loading ? "animate-pulse" : ""}`}
                                 onClick={onLogin}
                                 disabled={buttonDisabled || loading}
@@ -162,7 +178,7 @@ export default function LoginPage() {
                                 <div className="w-full border-t border-gray-200"></div>
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-white text-gray-500">Don't have an account?</span>
+                                <span className="px-2 bg-white text-gray-500">Don&apos;t have an account?</span>
                             </div>
                         </div>
 

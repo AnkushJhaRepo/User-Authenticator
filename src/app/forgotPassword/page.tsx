@@ -65,7 +65,7 @@ export default function ForgotPassword() {
                     </div>
                     <h1 className="text-3xl font-bold text-slate-800 mb-2">Forgot Password?</h1>
                     <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mx-auto mb-4"></div>
-                    <p className="text-slate-600">No worries! Enter your email address and we'll send you a link to reset your password.</p>
+                    <p className="text-slate-600">No worries! Enter your email address and we&apos;ll send you a link to reset your password.</p>
                 </div>
 
                 {/* Success State */}
@@ -78,7 +78,7 @@ export default function ForgotPassword() {
                         </div>
                         <div>
                             <h2 className="text-2xl font-semibold text-green-700 mb-2">Email Sent!</h2>
-                            <p className="text-slate-600 mb-4">We've sent a password reset link to <span className="font-semibold text-slate-800">{email}</span></p>
+                            <p className="text-slate-600 mb-4">We&apos;ve sent a password reset link to <span className="font-semibold text-slate-800">{email}</span></p>
                             <p className="text-sm text-slate-500">Please check your inbox and follow the instructions to reset your password.</p>
                         </div>
                         <div className="space-y-3">
@@ -152,7 +152,7 @@ export default function ForgotPassword() {
 
                         <div className="text-center">
                             <p className="text-sm text-slate-600">
-                                Remember your password?{' '}
+                                {"Remember your password?"}
                                 <a href="/login" className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">
                                     Back to Login
                                 </a>
