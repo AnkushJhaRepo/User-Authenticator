@@ -13,6 +13,7 @@ export default function SignupPage() {
     });
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("")
     const [passwordStrength, setPasswordStrength] = useState({
         score: 0,
         label: "",
@@ -36,10 +37,10 @@ export default function SignupPage() {
         };
 
         const score = Object.values(requirements).filter(Boolean).length;
-        
+
         let label = "";
         let color = "";
-        
+
         if (password.length === 0) {
             label = "";
             color = "";
@@ -77,8 +78,14 @@ export default function SignupPage() {
             const response = await axios.post("/api/users/signup", user);
             console.log("Signup Completed", response.data);
             router.push("/login");
-        } catch (error: any) {
-            console.log("signup failed", error.message);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
+                console.log("Reset password failed", error.message)
+            } else {
+                setError("An unexpected error occurred. Please try again.")
+                console.error("Unknown error during password reset", error)
+            }
         } finally {
             setLoading(false);
         }
@@ -182,7 +189,7 @@ export default function SignupPage() {
                                     </svg>
                                 </div>
                             </div>
-                            
+
                             {/* Password Strength Indicator */}
                             {user.password && (
                                 <div className="mt-3 space-y-2">
@@ -191,15 +198,14 @@ export default function SignupPage() {
                                         {[1, 2, 3, 4, 5].map((level) => (
                                             <div
                                                 key={level}
-                                                className={`h-2 flex-1 rounded-full transition-all duration-300 ${
-                                                    level <= passwordStrength.score
+                                                className={`h-2 flex-1 rounded-full transition-all duration-300 ${level <= passwordStrength.score
                                                         ? getStrengthBarColor(passwordStrength.score)
                                                         : "bg-gray-200"
-                                                }`}
+                                                    }`}
                                             />
                                         ))}
                                     </div>
-                                    
+
                                     {/* Strength Label */}
                                     {passwordStrength.label && (
                                         <div className="flex justify-between items-center">
@@ -211,56 +217,46 @@ export default function SignupPage() {
                                             </span>
                                         </div>
                                     )}
-                                    
+
                                     {/* Requirements Checklist */}
                                     <div className="grid grid-cols-1 gap-1 text-xs">
-                                        <div className={`flex items-center space-x-2 ${
-                                            passwordStrength.requirements.length ? "text-green-600" : "text-gray-500"
-                                        }`}>
-                                            <svg className={`h-3 w-3 ${
-                                                passwordStrength.requirements.length ? "text-green-500" : "text-gray-400"
-                                            }`} fill="currentColor" viewBox="0 0 20 20">
+                                        <div className={`flex items-center space-x-2 ${passwordStrength.requirements.length ? "text-green-600" : "text-gray-500"
+                                            }`}>
+                                            <svg className={`h-3 w-3 ${passwordStrength.requirements.length ? "text-green-500" : "text-gray-400"
+                                                }`} fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                             <span>At least 8 characters</span>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2">
-                                            <div className={`flex items-center space-x-2 ${
-                                                passwordStrength.requirements.uppercase ? "text-green-600" : "text-gray-500"
-                                            }`}>
-                                                <svg className={`h-3 w-3 ${
-                                                    passwordStrength.requirements.uppercase ? "text-green-500" : "text-gray-400"
-                                                }`} fill="currentColor" viewBox="0 0 20 20">
+                                            <div className={`flex items-center space-x-2 ${passwordStrength.requirements.uppercase ? "text-green-600" : "text-gray-500"
+                                                }`}>
+                                                <svg className={`h-3 w-3 ${passwordStrength.requirements.uppercase ? "text-green-500" : "text-gray-400"
+                                                    }`} fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                                 </svg>
                                                 <span>Uppercase</span>
                                             </div>
-                                            <div className={`flex items-center space-x-2 ${
-                                                passwordStrength.requirements.lowercase ? "text-green-600" : "text-gray-500"
-                                            }`}>
-                                                <svg className={`h-3 w-3 ${
-                                                    passwordStrength.requirements.lowercase ? "text-green-500" : "text-gray-400"
-                                                }`} fill="currentColor" viewBox="0 0 20 20">
+                                            <div className={`flex items-center space-x-2 ${passwordStrength.requirements.lowercase ? "text-green-600" : "text-gray-500"
+                                                }`}>
+                                                <svg className={`h-3 w-3 ${passwordStrength.requirements.lowercase ? "text-green-500" : "text-gray-400"
+                                                    }`} fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                                 </svg>
                                                 <span>Lowercase</span>
                                             </div>
-                                            <div className={`flex items-center space-x-2 ${
-                                                passwordStrength.requirements.number ? "text-green-600" : "text-gray-500"
-                                            }`}>
-                                                <svg className={`h-3 w-3 ${
-                                                    passwordStrength.requirements.number ? "text-green-500" : "text-gray-400"
-                                                }`} fill="currentColor" viewBox="0 0 20 20">
+                                            <div className={`flex items-center space-x-2 ${passwordStrength.requirements.number ? "text-green-600" : "text-gray-500"
+                                                }`}>
+                                                <svg className={`h-3 w-3 ${passwordStrength.requirements.number ? "text-green-500" : "text-gray-400"
+                                                    }`} fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                                 </svg>
                                                 <span>Number</span>
                                             </div>
-                                            <div className={`flex items-center space-x-2 ${
-                                                passwordStrength.requirements.special ? "text-green-600" : "text-gray-500"
-                                            }`}>
-                                                <svg className={`h-3 w-3 ${
-                                                    passwordStrength.requirements.special ? "text-green-500" : "text-gray-400"
-                                                }`} fill="currentColor" viewBox="0 0 20 20">
+                                            <div className={`flex items-center space-x-2 ${passwordStrength.requirements.special ? "text-green-600" : "text-gray-500"
+                                                }`}>
+                                                <svg className={`h-3 w-3 ${passwordStrength.requirements.special ? "text-green-500" : "text-gray-400"
+                                                    }`} fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                                 </svg>
                                                 <span>Special char</span>
@@ -273,11 +269,10 @@ export default function SignupPage() {
 
                         {/* Signup Button */}
                         <button
-                            className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${
-                                buttonDisabled || loading
+                            className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${buttonDisabled || loading
                                     ? "bg-gray-300 cursor-not-allowed"
                                     : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
-                            } ${loading ? "animate-pulse" : ""}`}
+                                } ${loading ? "animate-pulse" : ""}`}
                             onClick={onSignup}
                             disabled={buttonDisabled || loading}
                         >
@@ -297,8 +292,8 @@ export default function SignupPage() {
                         <div className="text-center pt-4 border-t border-gray-100">
                             <p className="text-gray-600">
                                 Already have an account?{" "}
-                                <Link 
-                                    href="/login" 
+                                <Link
+                                    href="/login"
                                     className="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200 hover:underline"
                                 >
                                     Sign in here

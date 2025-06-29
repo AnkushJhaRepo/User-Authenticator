@@ -7,6 +7,7 @@ import { useState } from "react";
 export default function ProfilePage() {
     const router = useRouter();
     const [data, setData] = useState("nothing");
+    const [error, setError] = useState("")
     const [loading, setLoading] = useState(false);
     const [userDetailsLoading, setUserDetailsLoading] = useState(false);
 
@@ -28,8 +29,14 @@ export default function ProfilePage() {
             const res = await axios.get('api/users/me');
             console.log(res.data);
             setData(res.data.data._id);
-        } catch (error: any) {
-            console.log(error.message);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
+                console.log("Reset password failed", error.message)
+            } else {
+                setError("An unexpected error occurred. Please try again.")
+                console.error("Unknown error during password reset", error)
+            }
         } finally {
             setUserDetailsLoading(false);
         }
@@ -60,7 +67,7 @@ export default function ProfilePage() {
                                 </svg>
                                 <span className="text-sm font-medium text-gray-700">User ID</span>
                             </div>
-                            
+
                             <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                 {data === "nothing" ? (
                                     <div className="text-center py-4">
@@ -78,7 +85,7 @@ export default function ProfilePage() {
                                             </svg>
                                             <span className="text-sm font-medium text-green-700">User details loaded</span>
                                         </div>
-                                        <Link 
+                                        <Link
                                             href={`/profile/${data}`}
                                             className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
                                         >

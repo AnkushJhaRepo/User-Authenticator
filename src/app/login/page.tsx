@@ -7,6 +7,7 @@ import axios from "axios";
 
 export default function LoginPage() {
     const router = useRouter();
+    const [error, setError] = useState("")
     const [user, setUser] = useState({
         email: "",
         password: ""
@@ -21,8 +22,14 @@ export default function LoginPage() {
             const response = await axios.post("/api/users/login", user);
             console.log("Login success", response.data);
             router.push("/profile");
-        } catch (error: any) {
-            console.log("Login failed", error.message);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
+                console.log("Reset password failed", error.message)
+            } else {
+                setError("An unexpected error occurred. Please try again.")
+                console.error("Unknown error during password reset", error)
+            }
         } finally {
             setLoading(false);
         }
@@ -114,11 +121,10 @@ export default function LoginPage() {
                             {/* Login Button */}
                             <button
                                 type="button"
-                                className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${
-                                    buttonDisabled || loading
+                                className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${buttonDisabled || loading
                                         ? "bg-gray-300 cursor-not-allowed"
                                         : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
-                                } ${loading ? "animate-pulse" : ""}`}
+                                    } ${loading ? "animate-pulse" : ""}`}
                                 onClick={onLogin}
                                 disabled={buttonDisabled || loading}
                             >
@@ -162,8 +168,8 @@ export default function LoginPage() {
 
                         {/* Signup Link */}
                         <div className="text-center">
-                            <Link 
-                                href="/signup" 
+                            <Link
+                                href="/signup"
                                 className="inline-flex items-center space-x-2 font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200 hover:underline"
                             >
                                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

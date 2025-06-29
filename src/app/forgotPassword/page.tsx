@@ -24,9 +24,14 @@ export default function ForgotPassword() {
             setError("")
             await axios.post("/api/users/forgotPassword", { email })
             setSuccess(true)
-        } catch (error: any) {
-            setError(error.response?.data?.message || "Failed to send reset email. Please try again.")
-            console.log("ForgotPassword failed", error.message)
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
+                console.log("Reset password failed", error.message)
+            } else {
+                setError("An unexpected error occurred. Please try again.")
+                console.error("Unknown error during password reset", error)
+            }
         } finally {
             setProcessing(false)
         }
@@ -112,9 +117,8 @@ export default function ForgotPassword() {
                                     placeholder="Enter your email address"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 ${
-                                        error ? 'border-red-300 bg-red-50' : 'border-slate-300 bg-white'
-                                    }`}
+                                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 ${error ? 'border-red-300 bg-red-50' : 'border-slate-300 bg-white'
+                                        }`}
                                     disabled={processing}
                                 />
                             </div>
@@ -131,11 +135,10 @@ export default function ForgotPassword() {
                         <button
                             type="submit"
                             disabled={processing || !email.trim()}
-                            className={`w-full font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg ${
-                                processing || !email.trim()
+                            className={`w-full font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg ${processing || !email.trim()
                                     ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
                                     : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
-                            }`}
+                                }`}
                         >
                             {processing ? (
                                 <div className="flex items-center justify-center">

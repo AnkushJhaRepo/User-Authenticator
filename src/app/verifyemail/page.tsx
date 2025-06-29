@@ -8,31 +8,36 @@ export default function VerifyEmailPage() {
     const [verified, setVerified] = useState(false)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
-    
+
     const verifyUserEmail = async () => {
         try {
             setLoading(true)
             await axios.post('/api/users/verifyEmail', { token })
             setVerified(true)
-        } catch (error: any) {
-            setError(true)
-            console.log(error.response.data)
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(true)
+                console.log(error.response?.data)
+            } else {
+                setError(true)
+                console.error("Unknown error during email verification:", error)
+            }
         } finally {
             setLoading(false)
         }
     }
-    
+
     useEffect(() => {
         const urlToken = window.location.search.split("=")[1]
         setToken(urlToken || "")
     }, [])
-    
+
     useEffect(() => {
         if (token.length > 0) {
             verifyUserEmail()
         }
     }, [token])
-    
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col items-center justify-center p-6">
             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 max-w-md w-full text-center">
@@ -86,8 +91,8 @@ export default function VerifyEmailPage() {
                             <p className="text-slate-600 mb-6">There was an issue verifying your email. The token may be invalid or expired.</p>
                         </div>
                         <div className="space-y-3">
-                            <button 
-                                onClick={() => window.location.reload()} 
+                            <button
+                                onClick={() => window.location.reload()}
                                 className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
                             >
                                 Try Again

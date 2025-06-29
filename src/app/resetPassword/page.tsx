@@ -22,9 +22,14 @@ export default function ResetPassword() {
             setError("")
             await axios.post("/api/users/resetPassword", { password, token })
             setReset(true)
-        } catch (error: any) {
-            setError(error.response?.data?.message || "Failed to reset password. Please try again.")
-            console.log("Reset password failed", error.message)
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
+                console.log("Reset password failed", error.message)
+            } else {
+                setError("An unexpected error occurred. Please try again.")
+                console.error("Unknown error during password reset", error)
+            }
         } finally {
             setProcessing(false)
         }
@@ -160,9 +165,8 @@ export default function ResetPassword() {
                                     placeholder="Enter new password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className={`w-full pr-12 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all duration-200 ${
-                                        error && !password ? 'border-red-300 bg-red-50' : 'border-slate-300 bg-white'
-                                    }`}
+                                    className={`w-full pr-12 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all duration-200 ${error && !password ? 'border-red-300 bg-red-50' : 'border-slate-300 bg-white'
+                                        }`}
                                     disabled={processing}
                                 />
                                 <button
@@ -191,7 +195,7 @@ export default function ResetPassword() {
                                         </span>
                                     </div>
                                     <div className="w-full bg-slate-200 rounded-full h-2">
-                                        <div 
+                                        <div
                                             className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor(passwordStrength)}`}
                                             style={{ width: `${passwordStrength}%` }}
                                         ></div>
@@ -212,9 +216,8 @@ export default function ResetPassword() {
                                     placeholder="Confirm new password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className={`w-full pr-12 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all duration-200 ${
-                                        confirmPassword && password !== confirmPassword ? 'border-red-300 bg-red-50' : 'border-slate-300 bg-white'
-                                    }`}
+                                    className={`w-full pr-12 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all duration-200 ${confirmPassword && password !== confirmPassword ? 'border-red-300 bg-red-50' : 'border-slate-300 bg-white'
+                                        }`}
                                     disabled={processing}
                                 />
                                 <button
@@ -260,11 +263,10 @@ export default function ResetPassword() {
                         <button
                             type="submit"
                             disabled={processing || !password || !confirmPassword || password !== confirmPassword}
-                            className={`w-full font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg ${
-                                processing || !password || !confirmPassword || password !== confirmPassword
+                            className={`w-full font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg ${processing || !password || !confirmPassword || password !== confirmPassword
                                     ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
                                     : 'bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white'
-                            }`}
+                                }`}
                         >
                             {processing ? (
                                 <div className="flex items-center justify-center">
