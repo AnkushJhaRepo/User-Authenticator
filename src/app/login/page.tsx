@@ -39,11 +39,11 @@ export default function LoginPage() {
             router.push('/forgotPassword');
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
-                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
-                console.log("Reset password failed", error.message)
+                setError(error.response?.data?.message || "Failed to load forgot password. Please try again.")
+                console.log("Forgot password failed", error.message)
             } else {
                 setError("An unexpected error occurred. Please try again.")
-                console.error("Unknown error during password reset", error)
+                console.error("Unknown error during password forgot", error)
             }
         }
     };

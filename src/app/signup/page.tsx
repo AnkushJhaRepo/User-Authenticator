@@ -80,11 +80,11 @@ export default function SignupPage() {
             router.push("/login");
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
-                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
-                console.log("Reset password failed", error.message)
+                setError(error.response?.data?.message || "Failed to signup. Please try again.")
+                console.log("Signup failed", error.message)
             } else {
                 setError("An unexpected error occurred. Please try again.")
-                console.error("Unknown error during password reset", error)
+                console.error("Unknown error during singup", error)
             }
         } finally {
             setLoading(false);

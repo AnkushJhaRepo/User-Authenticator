@@ -18,11 +18,11 @@ export default function ProfilePage() {
             router.push('/login');
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
-                setError(error.response?.data?.message || "Failed to reset password. Please try again.")
-                console.log("Reset password failed", error.message)
+                setError(error.response?.data?.message || "Failed to load profile. Please try again.")
+                console.log("profile loader failed", error.message)
             } else {
                 setError("An unexpected error occurred. Please try again.")
-                console.error("Unknown error during password reset", error)
+                console.error("Unknown error during profile loading", error)
             }
         } finally {
             setLoading(false);
