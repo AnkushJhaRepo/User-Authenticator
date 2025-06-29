@@ -1,5 +1,11 @@
-export default function UserProfile({ params }: any) {
-    const id = params.id 
+type UserProfileProps = {
+    params: {
+        id: string;
+    };
+};
+
+export default function UserProfile({ params }: UserProfileProps) {
+    const id = params.id
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center p-6">
             <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 max-w-md w-full text-center">
@@ -12,7 +18,7 @@ export default function UserProfile({ params }: any) {
                     <h1 className="text-3xl font-bold text-slate-800 mb-2">User Profile</h1>
                     <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto"></div>
                 </div>
-                
+
                 <div className="space-y-4">
                     <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                         <p className="text-slate-600 text-sm font-medium mb-2">User ID</p>
@@ -23,7 +29,7 @@ export default function UserProfile({ params }: any) {
                             {id}
                         </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-3 mt-6">
                         <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
                             Edit Profile

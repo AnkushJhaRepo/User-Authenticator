@@ -199,8 +199,8 @@ export default function SignupPage() {
                                             <div
                                                 key={level}
                                                 className={`h-2 flex-1 rounded-full transition-all duration-300 ${level <= passwordStrength.score
-                                                        ? getStrengthBarColor(passwordStrength.score)
-                                                        : "bg-gray-200"
+                                                    ? getStrengthBarColor(passwordStrength.score)
+                                                    : "bg-gray-200"
                                                     }`}
                                             />
                                         ))}
@@ -270,8 +270,8 @@ export default function SignupPage() {
                         {/* Signup Button */}
                         <button
                             className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${buttonDisabled || loading
-                                    ? "bg-gray-300 cursor-not-allowed"
-                                    : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
+                                ? "bg-gray-300 cursor-not-allowed"
+                                : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
                                 } ${loading ? "animate-pulse" : ""}`}
                             onClick={onSignup}
                             disabled={buttonDisabled || loading}
@@ -287,6 +287,15 @@ export default function SignupPage() {
                                 "Create Account"
                             )}
                         </button>
+
+                        {error && (
+                            <p className="text-sm text-red-600 text-center flex items-center justify-center mt-2">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {error}
+                            </p>
+                        )}
 
                         {/* Login Link */}
                         <div className="text-center pt-4 border-t border-gray-100">
