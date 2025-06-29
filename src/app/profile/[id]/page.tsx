@@ -4,8 +4,9 @@ type UserProfileProps = {
     };
 };
 
-export default function UserProfile({ params }: UserProfileProps) {
-    const id = params.id
+export default async function UserProfile({ params }: UserProfileProps) {
+    const id = params.id;
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center p-6">
             <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 max-w-md w-full text-center">
@@ -41,5 +42,5 @@ export default function UserProfile({ params }: UserProfileProps) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
