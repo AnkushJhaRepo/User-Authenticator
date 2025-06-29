@@ -1,11 +1,5 @@
-type UserProfileProps = {
-    params: {
-        id: string;
-    };
-};
 
-
-export default function UserProfile({ params }: UserProfileProps) {
+export default function UserProfile({ params } : any) {
     const { id } = params;
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center p-6">
