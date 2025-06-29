@@ -1,12 +1,5 @@
-import { Metadata } from 'next';
 
-interface UserProfileProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function UserProfile({ params }: UserProfileProps) {
+export default function UserProfile({ params }: any) {
   const { id } = params;
   
   return (
@@ -61,10 +54,4 @@ export default function UserProfile({ params }: UserProfileProps) {
       </div>
     </div>
   );
-}
-
-export async function generateMetadata({ params }: UserProfileProps): Promise<Metadata> {
-  return {
-    title: `User ${params.id} Profile`,
-  };
 }
